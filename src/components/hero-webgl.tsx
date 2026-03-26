@@ -32,7 +32,6 @@ const Scene = () => {
       uniform float uTime;
       varying vec2 vUv;
 
-      // Simple noise function
       float random(vec2 st) {
         return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
       }
@@ -50,34 +49,20 @@ const Scene = () => {
 
       void main() {
         vec2 uv = vUv;
-
-        // Depth-based displacement
         float depth = texture2D(uDepthMap, uv).r;
         vec2 displacement = depth * uPointer * 0.01;
         vec2 distortedUv = uv + displacement;
-
-        // Base texture
         vec4 baseColor = texture2D(uTexture, distortedUv);
-
-        // Create scanning effect
         float aspect = ${WIDTH}.0 / ${HEIGHT}.0;
         vec2 tUv = vec2(uv.x * aspect, uv.y);
         vec2 tiling = vec2(120.0);
         vec2 tiledUv = mod(tUv * tiling, 2.0) - 1.0;
-
         float brightness = noise(tUv * tiling * 0.5);
         float dist = length(tiledUv);
         float dot = smoothstep(0.5, 0.49, dist) * brightness;
-
-        // Flow effect based on progress
         float flow = 1.0 - smoothstep(0.0, 0.02, abs(depth - uProgress));
-
-        // Red scanning overlay
         vec3 mask = vec3(dot * flow * 10.0, 0.0, 0.0);
-
-        // Combine effects
         vec3 final = baseColor.rgb + mask;
-
         gl_FragColor = vec4(final, 1.0);
       }
     `
@@ -114,8 +99,8 @@ const Scene = () => {
 }
 
 export const Hero3DWebGL = () => {
-  const titleWords = "Synapse AI".split(" ")
-  const subtitle = "Нейроинтерфейсы нового поколения."
+  const titleWords = "Воронов Илья".split(" ")
+  const subtitle = "Индивидуальный образовательный маршрут"
   const [visibleWords, setVisibleWords] = useState(0)
   const [subtitleVisible, setSubtitleVisible] = useState(false)
   const [delays, setDelays] = useState<number[]>([])
@@ -172,6 +157,34 @@ export const Hero3DWebGL = () => {
           >
             {subtitle}
           </div>
+        </div>
+
+        <div
+          className={`mt-6 flex gap-3 ${subtitleVisible ? "fade-in-subtitle" : ""}`}
+          style={{
+            opacity: subtitleVisible ? undefined : 0,
+            animationDelay: `${titleWords.length * 0.13 + 0.6 + subtitleDelay}s`,
+            pointerEvents: "auto",
+          }}
+        >
+          <a
+            href="#slide1"
+            className="px-5 py-2 border border-red-500 text-red-400 text-xs uppercase tracking-widest font-orbitron hover:bg-red-500 hover:text-white transition-all duration-300"
+          >
+            Слайд 1
+          </a>
+          <a
+            href="#slide2"
+            className="px-5 py-2 border border-red-500 text-red-400 text-xs uppercase tracking-widest font-orbitron hover:bg-red-500 hover:text-white transition-all duration-300"
+          >
+            Слайд 2
+          </a>
+          <a
+            href="#slide3"
+            className="px-5 py-2 border border-red-500 text-red-400 text-xs uppercase tracking-widest font-orbitron hover:bg-red-500 hover:text-white transition-all duration-300"
+          >
+            Слайд 3
+          </a>
         </div>
       </div>
 
